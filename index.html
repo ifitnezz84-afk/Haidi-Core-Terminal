@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HAiDi Core Terminal</title>
+    <script src="https://tailwindcss.com"></script>
+    <script src="https://jsdelivr.net"></script>
+</head>
+<body class="bg-[#0B0F19] text-white font-sans min-h-screen">
+    <header class="flex justify-between items-center p-6 border-b border-gray-800">
+        <div class="flex items-center gap-3">
+            <div class="w-10 h-10 rounded-lg bg-cyan-500 overflow-hidden shadow-[0_0_15px_rgba(0,240,255,0.4)]">
+                <img src="https://unsplash.com" class="w-full h-full object-cover">
+            </div>
+            <h1 class="text-xl font-bold tracking-wider text-cyan-400">\$HAiDi Core</h1>
+        </div>
+        <button id="connectWalletBtn" onclick="connectWallet()" class="bg-gradient-to-r from-cyan-500 to-purple-600 px-6 py-2 rounded-xl font-medium tracking-wide shadow-lg hover:brightness-110 transition">
+            Connect Wallet
+        </button>
+    </header>
+    <main class="max-w-6xl mx-auto p-6 grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+        <div class="md:col-span-2 bg-[#121826] border border-gray-800 rounded-3xl p-6 shadow-2xl">
+            <h2 class="text-lg font-bold text-gray-400 uppercase tracking-widest mb-6">Minter Vault System</h2>
+            <div class="grid grid-cols-2 gap-4 mb-6">
+                <div class="bg-[#1A2234] p-4 rounded-2xl border border-gray-800">
+                    <p class="text-xs text-gray-500">Staked Collateral</p>
+                    <p class="text-xl font-bold text-cyan-400 mt-1" id="stakedDisplay">0.00 \$HAiDi</p>
+                </div>
+                <div class="bg-[#1A2234] p-4 rounded-2xl border border-gray-800">
+                    <p class="text-xs text-gray-500">Minted Debt Balance</p>
+                    <p class="text-xl font-bold text-purple-400 mt-1" id="debtDisplay">0.00 \$MINT</p>
+                </div>
+            </div>
+            <div class="space-y-4">
+                <div>
+                    <label class="block text-xs text-gray-400 font-medium mb-2">1. Deposit \$HAiDi Collateral</label>
+                    <div class="flex gap-2">
+                        <input id="depositInput" type="number" placeholder="Enter amount to stake" class="w-full bg-[#0B0F19] border border-gray-800 rounded-xl px-4 py-3 text-white focus:outline-none focus:border-cyan-500">
+                        <button onclick="executeVaultAction()" class="bg-cyan-500 hover:bg-cyan-600 px-6 py-3 rounded-xl font-semibold whitespace-nowrap transition">Lock & Mint</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="bg-[#121826] border border-gray-800 rounded-3xl p-6 shadow-2xl flex flex-col justify-between">
+            <div>
+                <h2 class="text-lg font-bold text-gray-400 uppercase tracking-widest mb-4">Cognitive Compute Node</h2>
+                <p class="text-xs text-gray-500 mb-4">Staked Credit Multiplier Active: <span class="text-cyan-400 font-bold">0.3 Credits/Day</span></p>
+                <textarea id="promptInput" rows="4" placeholder="Enter Prompt: 'Generate a viral cyberpunk meme of \$HAiDi...'" class="w-full bg-[#0B0F19] border border-gray-800 rounded-xl px-4 py-3 text-sm text-white focus:outline-none focus:border-cyan-500 resize-none"></textarea>
+            </div>
+            <button onclick="triggerAICalls()" class="w-full mt-4 bg-gradient-to-r from-purple-600 to-cyan-500 py-4 rounded-xl font-bold tracking-wider hover:brightness-110 transition shadow-lg shadow-purple-900/30">
+                ⚡ RUN COMPUTE (1 CREDIT)
+            </button>
+        </div>
+    </main>
+    <script>
+        let provider, signer, userAddress;
+        const vaultContractAddress = "YOUR_DEPLOYED_VAULT_CONTRACT_ADDRESS_HERE"; 
+        async function connectWallet() {
+            if (window.ethereum) {
+                provider = new ethers.providers.Web3Provider(window.ethereum);
+                await provider.send("eth_requestAccounts", []);
+                signer = provider.getSigner();
+                userAddress = await signer.getAddress();
+                document.getElementById('connectWalletBtn').innerText = userAddress.substring(0,6) + "..." + userAddress.substring(38);
+            } else {
+                alert("Please install MetaMask to interact with HAiDi.");
+            }
+        }
+        async function triggerAICalls() {
+            const prompt = document.getElementById('promptInput').value;
+            if(!prompt) return alert("Please enter a valid meme prompt.");
+            alert("Connecting to compute server nodes. Your generated image will stream back instantly.");
+            window.open(`YOUR_MAKE_COM_WEBHOOK_URL_HERE?user=${userAddress}&prompt=${encodeURIComponent(prompt)}`, '_blank');
+        }
+    </script>
+</body>
+</html>
